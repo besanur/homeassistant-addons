@@ -1,0 +1,13 @@
+name: "Prayer Times"
+description: "Islamic Prayer Times fetched from Diyanet"
+version: "1.0.0"
+slug: prayer-times
+url: "https://github.com/besanur/homeassistant-addons/tree/main/prayer-times"
+arch:
+  - aarch64
+  - amd64
+ports:
+  1453/tcp: 1453
+ports_description:
+  1453/tcp: Prayer Times API Backend
+image: "besanur/{arch}-prayer-times"

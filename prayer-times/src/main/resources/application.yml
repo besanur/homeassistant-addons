@@ -1,0 +1,5 @@
+server:
+  port: 1453
+
+app:
+  base-url: https://namazvakitleri.diyanet.gov.tr/en-US/

@@ -1,0 +1,9 @@
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+build_from:
+  aarch64: "eclipse-temurin:17-jre"
+  amd64: "eclipse-temurin:17-jre"
+labels:
+  org.opencontainers.image.title: "Home Assistant Add-on: Prayer Times"
+  org.opencontainers.image.description: "Islamic Prayer Times fetched from Diyanet"
+  org.opencontainers.image.source: "https://github.com/besanur/home-assistant-addons"
+  org.opencontainers.image.licenses: "Apache License 2.0"
