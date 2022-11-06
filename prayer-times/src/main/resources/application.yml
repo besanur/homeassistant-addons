@@ -1,5 +1,30 @@
+application:
+  title: Prayer Times
+  version: 1.1.0
+
 server:
   port: 1453
+
+spring:
+  datasource:
+    #url: jdbc:h2:mem:prayer-times;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=LEGACY
+    url: jdbc:h2:file:~/prayer-times;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=LEGACY
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.xml
+  h2:
+    console:
+      path: /h2
+      enabled: true
 
 app:
   base-url: https://namazvakitleri.diyanet.gov.tr/en-US/

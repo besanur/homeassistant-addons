@@ -2,17 +2,33 @@ package com.besanur.prayertimes.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 
-@Data
+
+@Entity
+@Setter
+@Getter
 @Builder
+@ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class PrayerTimeData {
 
+  @Id
+  private int regionId;
+
   private String region;
 
-  private List<PrayerTimes> prayerTimes;
-
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  private List<PrayerTime> prayerTimes;
 }

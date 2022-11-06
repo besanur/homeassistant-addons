@@ -1,0 +1,159 @@
+- id: "1653840900328"
+  alias: Namaz Vakti - Ezan on TV
+  trigger:
+    - platform: state
+      entity_id:
+        - sensor.diyanet_imsak_vakti
+      id: "1"
+      to: "True"
+    - platform: state
+      entity_id:
+        - sensor.diyanet_ogle_namazi
+      id: "2"
+      to: "True"
+    - platform: state
+      entity_id:
+        - sensor.diyanet_ikindi_namazi
+      id: "3"
+      to: "True"
+    - platform: state
+      entity_id:
+        - sensor.diyanet_aksam_namazi
+      id: "4"
+      to: "True"
+    - platform: state
+      entity_id:
+        - sensor.diyanet_yatsi_namazi
+      id: "5"
+      to: "True"
+  condition: []
+  action:
+    - if:
+        - condition: device
+          type: is_on
+          entity_id: remote.sony_bravia_tv
+          domain: remote
+      then:
+        - service: input_boolean.turn_on
+          data: {}
+          target:
+            entity_id: input_boolean.tv_state
+      else:
+        - type: turn_on
+          entity_id: remote.sony_bravia_tv
+          domain: remote
+        - service: input_boolean.turn_off
+          data: {}
+          target:
+            entity_id: input_boolean.tv_state
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 3
+        milliseconds: 0
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: "1"
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.sony_ke_55a85_cast
+              data:
+                media_content_id: media-source://media_source/local/01-sabah-ezani-saba-abdulkadir-sehitoglu.mp3
+                media_content_type: audio/mp3
+                extra:
+                  thumb: # url of image to show on tv
+                  title: Sabah Ezanı - Sabâ makamında
+                  metadata:
+                    metadataType: 3
+                    artist: Abdülkadir Şehitoğlu
+        - conditions:
+            - condition: trigger
+              id: "2"
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.sony_ke_55a85_cast
+              data:
+                media_content_id: media-source://media_source/local/02-ogle-ezani-rast-abdulkadir-sehitoglu.mp3
+                media_content_type: audio/mp3
+                extra:
+                  thumb: # url of image to show on tv
+                  title: Öğle Ezanı - Rast makamında
+                  metadata:
+                    metadataType: 3
+                    artist: Abdülkadir Şehitoğlu
+        - conditions:
+            - condition: trigger
+              id: "3"
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.sony_ke_55a85_cast
+              data:
+                media_content_id: media-source://media_source/local/03-ikindi-ezani-hicaz-abdulkadir-sehitoglu.mp3
+                media_content_type: audio/mp3
+                extra:
+                  thumb: # url of image to show on tv
+                  title: Ikindi Ezanı - Hicaz makamında
+                  metadata:
+                    metadataType: 3
+                    artist: Abdülkadir Şehitoğlu
+        - conditions:
+            - condition: trigger
+              id: "4"
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.sony_ke_55a85_cast
+              data:
+                media_content_id: media-source://media_source/local/04-aksam-ezani-segah-abdulkadir-sehitoglu.mp3
+                media_content_type: audio/mp3
+                extra:
+                  thumb: # url of image to show on tv
+                  title: Akşam Ezanı - Segah makamında
+                  metadata:
+                    metadataType: 3
+                    artist: Abdülkadir Şehitoğlu
+        - conditions:
+            - condition: trigger
+              id: "5"
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.sony_ke_55a85_cast
+              data:
+                media_content_id: media-source://media_source/local/05-yatsi-ezani-ussak-abdulkadir-sehitoglu.mp3
+                media_content_type: audio/mp3
+                extra:
+                  thumb: # url of image to show on tv
+                  title: Yatsı Ezanı - Uşşak makamında
+                  metadata:
+                    metadataType: 3
+                    artist: Abdülkadir Şehitoğlu
+      default:
+
+    - service: media_player.volume_set
+      data:
+        volume_level: 0.1
+      target:
+        entity_id: media_player.sony_bravia_tv
+
+    - delay:
+        hours: 0
+        minutes: 5
+        seconds: 40
+        milliseconds: 0
+
+    # turn tv off, if it was off before
+    - if:
+        - condition: state
+          state: "off"
+          entity_id: input_boolean.tv_state
+      then:
+        - service: media_player.turn_off
+          data: {}
+          target:
+            entity_id: media_player.sony_bravia_tv
+  mode: single

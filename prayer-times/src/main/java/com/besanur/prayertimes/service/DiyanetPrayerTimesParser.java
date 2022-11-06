@@ -1,8 +1,8 @@
 package com.besanur.prayertimes.service;
 
 import com.besanur.prayertimes.config.AppProperties;
+import com.besanur.prayertimes.model.PrayerTime;
 import com.besanur.prayertimes.model.PrayerTimeData;
-import com.besanur.prayertimes.model.PrayerTimes;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,38 +22,27 @@ import java.util.stream.Collectors;
 @Service
 public class DiyanetPrayerTimesParser {
 
-  @Autowired
-  private AppProperties appProperties;
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_TIME;
+  @Autowired
+  private AppProperties appProperties;
 
-  public PrayerTimeData getMonthlyPrayerTimes(final int regionId) throws IOException {
+  public PrayerTimeData fetchMonthlyPrayerTimes(final int regionId) throws IOException {
     PrayerTimeData prayerTimeData = PrayerTimeData.builder().build();
     final Elements prayerTimeRows = getAndParsePrayerTimeRows(regionId, prayerTimeData);
 
-    final List<PrayerTimes> collect = prayerTimeRows.stream()
+    final List<PrayerTime> collect = prayerTimeRows.stream()
         .map(this::buildPrayerTimes)
         .collect(Collectors.toList());
 
     prayerTimeData.setPrayerTimes(collect);
+    prayerTimeData.setRegionId(regionId);
     return prayerTimeData;
   }
 
-  public PrayerTimeData getDailyPrayerTimes(final int regionId) throws IOException {
-    PrayerTimeData prayerTimeData = PrayerTimeData.builder().build();
-    final Elements prayerTimeRows = getAndParsePrayerTimeRows(regionId, prayerTimeData);
-    final Element today = prayerTimeRows.get(0);
-
-    final PrayerTimes prayerTimes = buildPrayerTimes(today);
-
-    prayerTimeData.setPrayerTimes(List.of(prayerTimes));
-
-    return prayerTimeData;
-  }
-
-  private PrayerTimes buildPrayerTimes(final Element today) {
-    return PrayerTimes.builder()
-        .day(LocalDate.parse(today.child(0).text(), DATE_FORMAT))
+  private PrayerTime buildPrayerTimes(final Element today) {
+    return PrayerTime.builder()
+        .date(LocalDate.parse(today.child(0).text(), DATE_FORMAT))
         .fajr(LocalTime.parse(today.child(1).text(), TIME_FORMAT))
         .sun(LocalTime.parse(today.child(2).text(), TIME_FORMAT))
         .dhuhur(LocalTime.parse(today.child(3).text(), TIME_FORMAT))
@@ -65,7 +54,7 @@ public class DiyanetPrayerTimesParser {
 
   private Elements getAndParsePrayerTimeRows(final int regionId, PrayerTimeData prayerTimeData) throws IOException {
     final String url = appProperties.getBaseUrl().toString() + regionId;
-    log.info("Requesting prayer times from {}", url);
+    log.info("Fetching prayer times from {}", url);
     final Document doc = Jsoup.connect(url).get();
 
     final Elements elements = doc.getElementsByClass("vakit-table");
