@@ -1,0 +1,7 @@
+______  _______ _______ _______ __   _ _     _  ______
+ |_____] |______ |______ |_____| | \  | |     | |_____/
+ |_____] |______ ______| |     | |  \_| |_____| |    \_
+
+Namaz Vakti
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}

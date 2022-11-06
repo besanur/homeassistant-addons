@@ -1,0 +1,59 @@
+- platform: rest
+  name: namaz_vakti
+  resource: "http://localhost:1453/api/dailyPrayerTimes/<your_region_id>"
+  scan_interval: 25200
+  json_attributes_path: $.prayerTimes[0]
+  json_attributes:
+    - date
+    - fajr
+    - sun
+    - dhuhur
+    - asr
+    - maghrib
+    - isha
+  value_template: >
+    {% set now = now() %}
+
+    {% set fajr = today_at(state_attr('sensor.namaz_vakti', 'fajr')) %}
+    {% set sun = today_at(state_attr('sensor.namaz_vakti', 'sun')) %}
+    {% set dhuhur = today_at(state_attr('sensor.namaz_vakti', 'dhuhur')) %}
+    {% set asr = today_at(state_attr('sensor.namaz_vakti', 'asr')) %}
+    {% set maghrib = today_at(state_attr('sensor.namaz_vakti', 'maghrib')) %}
+    {% set isha = today_at(state_attr('sensor.namaz_vakti', 'isha')) %}
+
+    {% if now < fajr %}
+      Imsak: {{ state_attr('sensor.namaz_vakti', 'fajr') }}
+    {% elif now < sun %}
+      Güneş: {{ state_attr('sensor.namaz_vakti', 'sun') }}
+    {% elif now < dhuhur %}
+      Öğlen: {{ state_attr('sensor.namaz_vakti', 'dhuhur') }}
+    {% elif now < asr %}
+      Ikindi: {{ state_attr('sensor.namaz_vakti', 'asr') }}
+    {% elif now < maghrib %}
+      Akşam: {{ state_attr('sensor.namaz_vakti', 'maghrib') }}
+    {% elif now < isha %}
+      Yatsı: {{ state_attr('sensor.namaz_vakti', 'isha') }}
+    {% else %}
+      unknown
+    {% endif %}
+
+- platform: template
+  sensors:
+    diyanet_imsak_vakti:
+      friendly_name: "İmsak Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'fajr') == states('sensor.time')}}"
+    diyanet_gunes_vakti:
+      friendly_name: "Güneş Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'sun') == states('sensor.time')}}"
+    diyanet_ogle_namazi:
+      friendly_name: "Öğle Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'dhuhur') == states('sensor.time')}}"
+    diyanet_ikindi_namazi:
+      friendly_name: "İkindi Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'asr') == states('sensor.time')}}"
+    diyanet_aksam_namazi:
+      friendly_name: "Akşam Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'maghrib') == states('sensor.time')}}"
+    diyanet_yatsi_namazi:
+      friendly_name: "Yatsı Vakti"
+      value_template: "{{state_attr('sensor.namaz_vakti', 'isha') == states('sensor.time')}}"

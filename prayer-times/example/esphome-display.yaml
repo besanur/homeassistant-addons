@@ -1,0 +1,68 @@
+esphome:
+  name: d1-miniv3-oled
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: # generated key
+
+ota:
+  password: #passwd
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "D1-Miniv3-Oled Fallback Hotspot"
+    password: "H6pu9r6bxF2V"
+
+captive_portal:
+
+font:
+  - file: "fonts/OpenSans-Regular.ttf"
+    id: font_text
+    size: 13
+    glyphs: ['&', '@', '!', ',', '.', '?', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
+       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
+       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+       'u', 'v', 'w', 'x', 'y', 'z','å', 'Ä', 'ä', 'Ö', 'ö', 'Ü', 'ü', '/',
+       'ş','Ş','ğ','Ğ', 'ı']
+
+  - file: "fonts/Roboto-Regular.ttf"
+    id: font_clock
+    size: 22
+    glyphs: [':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+i2c:
+  sda: D2 # GPIO4
+  scl: D1 # GPIO5
+
+time:
+  - platform: homeassistant
+    id: esptime
+
+text_sensor:
+  - platform: homeassistant
+    id: namaz_vakti
+    entity_id: sensor.namaz_vakti
+    internal: true
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    id: my_display
+    reset_pin: D0
+    address: 0x3C
+    lambda: |-
+          it.strftime(0, 0, id(font_clock), TextAlign::TOP_LEFT, "%H:%M", id(esptime).now());
+          it.printf(0 ,64, id(font_text), TextAlign::BOTTOM_LEFT, "%s", id(namaz_vakti).state.c_str());
