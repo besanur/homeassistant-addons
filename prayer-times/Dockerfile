@@ -1,10 +1,11 @@
 ARG BUILD_FROM
 
 # Builder image
-FROM --platform=$BUILDPLATFORM eclipse-temurin:17-jdk as builder
+FROM eclipse-temurin:17-jdk as builder
 
 # Create a custom Java runtime
-RUN $JAVA_HOME/bin/jlink \
+RUN export JAVA_TOOL_OPTIONS="-Djdk.lang.Process.launchMechanism=vfork" && \
+    $JAVA_HOME/bin/jlink \
     --add-modules java.base,java.logging,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.sql \
     --strip-debug \
     --no-man-pages \
