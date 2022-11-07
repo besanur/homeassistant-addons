@@ -6,7 +6,6 @@ url: "https://github.com/besanur/homeassistant-addons/tree/main/prayer-times"
 arch:
   - amd64
   - aarch64
-  - armv7
 ports:
   1453/tcp: 1453
 ports_description:
