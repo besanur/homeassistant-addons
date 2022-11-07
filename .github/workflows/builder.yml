@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         addon: ["prayer-times"]
-        arch: ["aarch64", "amd64", "armv7"]
+        arch: ["aarch64", "amd64"]
 
     steps:
       - name: Check out repository
