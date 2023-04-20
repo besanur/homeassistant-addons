@@ -1,6 +1,6 @@
 name: "Prayer Times"
 description: "Islamic Prayer Times fetched from Diyanet"
-version: "1.1.0"
+version: "1.1.1"
 slug: prayer-times
 url: "https://github.com/besanur/homeassistant-addons/tree/main/prayer-times"
 arch:
