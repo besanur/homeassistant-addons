@@ -46,14 +46,6 @@ public class PrayerTimesService {
     return buildDailyPrayerTimeFromMonthly(requestPrayerTimes(regionId));
   }
 
-  private PrayerTimeData buildDailyPrayerTimeFromMonthly(PrayerTimeData prayerTimeData) {
-    return PrayerTimeData.builder()
-        .prayerTimes(List.of(prayerTimeData.getPrayerTimes().get(0), prayerTimeData.getPrayerTimes().get(1)))
-        .region(prayerTimeData.getRegion())
-        .regionId(prayerTimeData.getRegionId())
-        .build();
-  }
-
   @Scheduled(cron = "0 0 0 * * ?")
   public void clean() {
     log.info("Schedule started for cleanup");
@@ -65,7 +57,7 @@ public class PrayerTimesService {
       prayerTimeData.getPrayerTimes().forEach(prayerTime -> {
         if (LocalDate.now().isAfter(prayerTime.getDate())) {
           prayerTimeToRemove.add(prayerTime);
-          log.info("Removing old prayer time {}", prayerTime);
+          log.debug("Removing old prayer time {}", prayerTime);
         }
       });
       prayerTimeData.getPrayerTimes().removeAll(prayerTimeToRemove);
@@ -79,6 +71,14 @@ public class PrayerTimesService {
         requestPrayerTimes(prayerTimeData.getRegionId());
       }
     });
+  }
+
+  private PrayerTimeData buildDailyPrayerTimeFromMonthly(PrayerTimeData prayerTimeData) {
+    return PrayerTimeData.builder()
+        .prayerTimes(List.of(prayerTimeData.getPrayerTimes().get(0), prayerTimeData.getPrayerTimes().get(1)))
+        .region(prayerTimeData.getRegion())
+        .regionId(prayerTimeData.getRegionId())
+        .build();
   }
 
   private PrayerTimeData requestPrayerTimes(int regionId) {

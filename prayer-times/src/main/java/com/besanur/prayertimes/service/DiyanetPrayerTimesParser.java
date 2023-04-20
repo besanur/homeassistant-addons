@@ -43,12 +43,13 @@ public class DiyanetPrayerTimesParser {
   private PrayerTime buildPrayerTimes(final Element today) {
     return PrayerTime.builder()
         .date(LocalDate.parse(today.child(0).text(), DATE_FORMAT))
-        .fajr(LocalTime.parse(today.child(1).text(), TIME_FORMAT))
-        .sun(LocalTime.parse(today.child(2).text(), TIME_FORMAT))
-        .dhuhur(LocalTime.parse(today.child(3).text(), TIME_FORMAT))
-        .asr(LocalTime.parse(today.child(4).text(), TIME_FORMAT))
-        .maghrib(LocalTime.parse(today.child(5).text(), TIME_FORMAT))
-        .isha(LocalTime.parse(today.child(6).text(), TIME_FORMAT))
+        .hijriDate(today.child(1).text())
+        .fajr(LocalTime.parse(today.child(2).text(), TIME_FORMAT))
+        .sun(LocalTime.parse(today.child(3).text(), TIME_FORMAT))
+        .dhuhur(LocalTime.parse(today.child(4).text(), TIME_FORMAT))
+        .asr(LocalTime.parse(today.child(5).text(), TIME_FORMAT))
+        .maghrib(LocalTime.parse(today.child(6).text(), TIME_FORMAT))
+        .isha(LocalTime.parse(today.child(7).text(), TIME_FORMAT))
         .build();
   }
 

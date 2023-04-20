@@ -35,6 +35,8 @@ public class PrayerTime {
   @JsonFormat(pattern = "dd.MM.yyyy")
   private LocalDate date;
 
+  private String hijriDate;
+
   @JsonFormat(pattern = "HH:mm")
   private LocalTime fajr;
 
