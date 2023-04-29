@@ -20,7 +20,7 @@
   <properties>
     <java.version>17</java.version>
     <liquibase.version>4.17.2</liquibase.version>
-    <jsoup.version>1.15.3</jsoup.version>
+    <jsoup.version>1.15.4</jsoup.version>
   </properties>
 
   <distributionManagement>
