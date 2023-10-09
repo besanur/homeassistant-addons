@@ -20,14 +20,14 @@ public class PrayerTimesController {
 
   @GetMapping("/dailyPrayerTimes/{regionId}")
   public ResponseEntity<PrayerTimeData> getDailyPrayerTimes(@PathVariable int regionId) {
-    log.info("Request for daily prayer times for region {}", regionId);
+    log.info("Request for daily prayer times for region with id {}", regionId);
     final PrayerTimeData prayerTime = prayerTimesService.getDailyPrayerTime(regionId);
     return ResponseEntity.ok(prayerTime);
   }
 
   @GetMapping("/monthlyPrayerTimes/{regionId}")
   public ResponseEntity<PrayerTimeData> getMonthlyPrayerTimes(@PathVariable int regionId) {
-    log.info("Request for monthly prayer times for region {}", regionId);
+    log.info("Request for monthly prayer times for region with id {}", regionId);
     final PrayerTimeData prayerTime = prayerTimesService.getMonthlyPrayerTime(regionId);
     return ResponseEntity.ok(prayerTime);
   }

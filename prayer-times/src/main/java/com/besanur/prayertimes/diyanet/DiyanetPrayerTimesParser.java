@@ -1,6 +1,5 @@
-package com.besanur.prayertimes.service;
+package com.besanur.prayertimes.diyanet;
 
-import com.besanur.prayertimes.config.AppProperties;
 import com.besanur.prayertimes.model.PrayerTime;
 import com.besanur.prayertimes.model.PrayerTimeData;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,14 +22,12 @@ public class DiyanetPrayerTimesParser {
 
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_TIME;
-  @Autowired
-  private AppProperties appProperties;
 
   public PrayerTimeData fetchMonthlyPrayerTimes(final int regionId) throws IOException {
     PrayerTimeData prayerTimeData = PrayerTimeData.builder().build();
-    final Elements prayerTimeRows = getAndParsePrayerTimeRows(regionId, prayerTimeData);
+    Elements prayerTimeRows = getAndParsePrayerTimeRows(regionId, prayerTimeData);
 
-    final List<PrayerTime> collect = prayerTimeRows.stream()
+    List<PrayerTime> collect = prayerTimeRows.stream()
         .map(this::buildPrayerTimes)
         .collect(Collectors.toList());
 
@@ -54,19 +50,20 @@ public class DiyanetPrayerTimesParser {
   }
 
   private Elements getAndParsePrayerTimeRows(final int regionId, PrayerTimeData prayerTimeData) throws IOException {
-    final String url = appProperties.getBaseUrl().toString() + regionId;
+    String BASE_URL = "https://namazvakitleri.diyanet.gov.tr/en-US/";
+    String url = BASE_URL + regionId;
     log.info("Fetching prayer times from {}", url);
-    final Document doc = Jsoup.connect(url).get();
+    Document doc = Jsoup.connect(url).get();
 
-    final Elements elements = doc.getElementsByClass("vakit-table");
-    final Element monthlyTable = elements.stream()
+    Elements elements = doc.getElementsByClass("vakit-table");
+    Element monthlyTable = elements.stream()
         .filter(element -> element.getElementsByTag("caption").html().contains("Monthly")).findFirst().orElseThrow();
 
     String text = monthlyTable.getElementsByTag("caption").html();
     prayerTimeData.setRegion(text.substring(text.indexOf("for") + 4));
 
-    final Elements tbody = monthlyTable.getElementsByTag("tbody");
-    final Elements rowDays = tbody.get(0).getElementsByTag("tr");
+    Elements tbody = monthlyTable.getElementsByTag("tbody");
+    Elements rowDays = tbody.get(0).getElementsByTag("tr");
     return rowDays;
   }
 }

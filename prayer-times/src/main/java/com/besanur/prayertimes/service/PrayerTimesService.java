@@ -1,9 +1,12 @@
 package com.besanur.prayertimes.service;
 
+import com.besanur.prayertimes.cache.InMemoryCache;
+import com.besanur.prayertimes.config.AppProperties;
+import com.besanur.prayertimes.diyanet.DiyanetPrayerTimesParser;
 import com.besanur.prayertimes.exception.PrayerTimesParseException;
+import com.besanur.prayertimes.ezanvakti.EzanVaktiClient;
 import com.besanur.prayertimes.model.PrayerTime;
 import com.besanur.prayertimes.model.PrayerTimeData;
-import com.besanur.prayertimes.repository.PrayerTimesDataRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,76 +23,84 @@ public class PrayerTimesService {
 
   @Autowired
   private DiyanetPrayerTimesParser diyanetPrayerTimesParser;
-
   @Autowired
-  private PrayerTimesDataRepository prayerTimesDataRepository;
+  private EzanVaktiClient ezanVaktiClient;
+  @Autowired
+  private AppProperties appProperties;
+  @Autowired
+  private InMemoryCache store;
 
   public PrayerTimeData getMonthlyPrayerTime(int regionId) {
-    final Optional<PrayerTimeData> prayerTime = prayerTimesDataRepository.findById(regionId);
+    final PrayerTimeData prayerTime = store.get(regionId);
 
-    if (prayerTime.isPresent()) {
+    if (prayerTime != null) {
       log.info("Found stored prayer times for regionId {}", regionId);
-      return prayerTime.get();
+      return prayerTime;
     }
-
     return requestPrayerTimes(regionId);
   }
 
   public PrayerTimeData getDailyPrayerTime(int regionId) {
-    final Optional<PrayerTimeData> prayerTime = prayerTimesDataRepository.findById(regionId);
+    final PrayerTimeData prayerTime = store.get(regionId);
 
-    if (prayerTime.isPresent()) {
+    if (prayerTime != null) {
       log.info("Found stored prayer times for regionId {}", regionId);
-      return buildDailyPrayerTimeFromMonthly(prayerTime.get());
+      return buildDailyPrayerTimeFromMonthly(prayerTime);
     }
     return buildDailyPrayerTimeFromMonthly(requestPrayerTimes(regionId));
   }
 
   @Scheduled(cron = "0 0 0 * * ?")
   public void clean() {
-    log.info("Schedule started for cleanup");
+    log.info("Schedule started for cleaning up the Prayer Times");
 
-    final List<PrayerTimeData> updatedPrayerTimeData = new ArrayList<>();
-
-    prayerTimesDataRepository.findAll().forEach(prayerTimeData -> {
+    store.getAll().forEach(prayerTimeData -> {
       final List<PrayerTime> prayerTimeToRemove = new ArrayList<>();
       prayerTimeData.getPrayerTimes().forEach(prayerTime -> {
         if (LocalDate.now().isAfter(prayerTime.getDate())) {
           prayerTimeToRemove.add(prayerTime);
-          log.debug("Removing old prayer time {}", prayerTime);
+          log.debug("Removing old prayer time {}", prayerTime.getDate());
         }
       });
       prayerTimeData.getPrayerTimes().removeAll(prayerTimeToRemove);
-      updatedPrayerTimeData.add(prayerTimeData);
     });
-    updatedPrayerTimeData.forEach(prayerTimeData -> prayerTimesDataRepository.save(prayerTimeData));
 
     // fetch new prayer times if minimum of 10 is reached
-    updatedPrayerTimeData.forEach(prayerTimeData -> {
+    store.getAll().forEach(prayerTimeData -> {
       if (prayerTimeData.getPrayerTimes().size() <= 10) {
         requestPrayerTimes(prayerTimeData.getRegionId());
       }
     });
   }
 
+  private PrayerTimeData requestPrayerTimes(int regionId) {
+    log.info("Requesting prayer time for regionId {}", regionId);
+
+    if (!appProperties.isUseEzanVaktiApiOnly()) {
+      try {
+        final PrayerTimeData prayerTimeData = diyanetPrayerTimesParser.fetchMonthlyPrayerTimes(regionId);
+        store.put(prayerTimeData.getRegionId(), prayerTimeData);
+        return prayerTimeData;
+      } catch (IOException e) {
+        final var errMsg = "Can't parse prayer times from 'diyanet.gov.tr', fallback to ezanvakti";
+        log.error(errMsg, e);
+      }
+    }
+
+    try {
+      final PrayerTimeData prayerTimeData = ezanVaktiClient.fetchPrayerTimes(regionId);
+      store.put(prayerTimeData.getRegionId(), prayerTimeData);
+      return prayerTimeData;
+    } catch (Exception e) {
+      final var errMsg = "Can't parse prayer times from ezanvakti";
+      log.error(errMsg, e);
+      throw new PrayerTimesParseException(errMsg);
+    }
+  }
+
   private PrayerTimeData buildDailyPrayerTimeFromMonthly(PrayerTimeData prayerTimeData) {
     return PrayerTimeData.builder()
         .prayerTimes(List.of(prayerTimeData.getPrayerTimes().get(0), prayerTimeData.getPrayerTimes().get(1)))
-        .region(prayerTimeData.getRegion())
-        .regionId(prayerTimeData.getRegionId())
-        .build();
-  }
-
-  private PrayerTimeData requestPrayerTimes(int regionId) {
-    try {
-      log.info("Requesting prayer time for regionId {}", regionId);
-      final PrayerTimeData monthlyPrayerTimes = diyanetPrayerTimesParser.fetchMonthlyPrayerTimes(regionId);
-      prayerTimesDataRepository.save(monthlyPrayerTimes);
-      return monthlyPrayerTimes;
-    } catch (IOException e) {
-      final var errMsg = "Can't parse prayer times from server";
-      log.error(errMsg);
-      throw new PrayerTimesParseException(errMsg);
-    }
+        .region(prayerTimeData.getRegion()).regionId(prayerTimeData.getRegionId()).build();
   }
 }

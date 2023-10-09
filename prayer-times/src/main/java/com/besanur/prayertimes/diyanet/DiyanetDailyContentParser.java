@@ -1,4 +1,4 @@
-package com.besanur.prayertimes.service;
+package com.besanur.prayertimes.diyanet;
 
 import com.besanur.prayertimes.model.DailyContent;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,12 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-public class DailyContentParser {
+public class DiyanetDailyContentParser {
 
   private final static String URL = "https://diyanet.gov.tr";
 
   public DailyContent parseDailyContent() throws IOException {
+    log.info("Requesting daily content from {}", URL);
     final Document doc = Jsoup.connect(URL).get();
 
     final String verse = doc.getElementsByClass("ayet").stream()

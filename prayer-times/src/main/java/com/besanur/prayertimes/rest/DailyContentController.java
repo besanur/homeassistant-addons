@@ -1,7 +1,7 @@
 package com.besanur.prayertimes.rest;
 
+import com.besanur.prayertimes.diyanet.DiyanetDailyContentParser;
 import com.besanur.prayertimes.model.DailyContent;
-import com.besanur.prayertimes.service.DailyContentParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +16,12 @@ import java.io.IOException;
 public class DailyContentController {
 
   @Autowired
-  private DailyContentParser dailyContentParser;
+  private DiyanetDailyContentParser diyanetDailyContentParser;
 
   @GetMapping("/dailyContent")
   public DailyContent getDailyContent() throws IOException {
-    return dailyContentParser.parseDailyContent();
+    final DailyContent dailyContent = diyanetDailyContentParser.parseDailyContent();
+    log.info("Parsed daily content {}", dailyContent);
+    return dailyContent;
   }
 }

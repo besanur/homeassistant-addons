@@ -6,7 +6,7 @@ FROM eclipse-temurin:17-jdk as builder
 # Create a custom Java runtime
 RUN export JAVA_TOOL_OPTIONS="-Djdk.lang.Process.launchMechanism=vfork" && \
     $JAVA_HOME/bin/jlink \
-    --add-modules java.base,java.logging,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.sql \
+    --add-modules java.base,java.logging,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.sql,jdk.crypto.cryptoki \
     --strip-debug \
     --no-man-pages \
     --no-header-files \
@@ -18,8 +18,7 @@ WORKDIR /workspace/app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 RUN ./mvnw dependency:go-offline
-COPY pom.xml .
-COPY src src
+COPY src ./src
 
 RUN ./mvnw package -DskipTests
 

@@ -68,7 +68,7 @@ Will return the prayer time of the current and next day
 
 **Request**
 
-`GET /api//monthlyPrayerTimes/regionId`
+`GET /api//monthlyPrayerTimes/{regionId}`
 
     curl -i -H 'Accept: application/json' http://localhost:1453/api/monthlyPrayerTimes/9541
 
@@ -103,6 +103,29 @@ Will return the prayer time for a month
             "isha": "19:09"
         }
     ]
+}
+```
+
+### Get daily content (only in turkish)
+
+**Request**
+
+`GET /api/dailyContent`
+
+    curl -i -H 'Accept: application/json' http://localhost:1453/api/dailyContent
+
+**Response**
+
+Will return the daily content. Verse, Hadith and Pray with sources
+
+```json
+{
+  "verse": "Ey iman edenler! Allah ve resulünün önüne geçmeyin, Allah'a itaatsizlikten sakının! Şüphesiz Allah her şeyi işitmekte ve bilmektedir.",
+  "verseSource": "(Hucurât, 49/1)",
+  "hadith": "Allah'a sığınan kimseyi koruyup himaye ediniz. Allah için isteyene veriniz. Sizi davet edenin davetine icabet ediniz.",
+  "hadithSource": "(Ebû Dâvud, \"Zekât\", 37)",
+  "pray": "Ey Allah'ım! Güzellikleri Senden başkası veremez. Kötülükleri de Senden başkası önleyemez. Binaenaleyh (kötülüğü önlemek için gerekli olan) güç de (güzelliği elde etmek için gerekli olan) kuvvet de ancak Senindir.",
+  "praySource": "(Ebû Dâvud, \"Tıb\", 24)"
 }
 ```
 
