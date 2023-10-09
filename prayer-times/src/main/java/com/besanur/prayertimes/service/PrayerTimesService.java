@@ -34,7 +34,7 @@ public class PrayerTimesService {
     final PrayerTimeData prayerTime = store.get(regionId);
 
     if (prayerTime != null) {
-      log.info("Found stored prayer times for regionId {}", regionId);
+      log.info("Found stored prayer times for region {} regionId {}", prayerTime.getRegion(), regionId);
       return prayerTime;
     }
     return requestPrayerTimes(regionId);
@@ -44,7 +44,7 @@ public class PrayerTimesService {
     final PrayerTimeData prayerTime = store.get(regionId);
 
     if (prayerTime != null) {
-      log.info("Found stored prayer times for regionId {}", regionId);
+      log.info("Found stored prayer times for region {} regionId {}", prayerTime.getRegion(), regionId);
       return buildDailyPrayerTimeFromMonthly(prayerTime);
     }
     return buildDailyPrayerTimeFromMonthly(requestPrayerTimes(regionId));

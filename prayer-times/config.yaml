@@ -10,4 +10,4 @@ ports:
   1453/tcp: 1453
 ports_description:
   1453/tcp: Prayer Times API Backend
-#image: "besanur/{arch}-prayer-times"
+image: "besanur/{arch}-prayer-times"
