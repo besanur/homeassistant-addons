@@ -1,6 +1,8 @@
 {
     "name": "Prayer Times Home Assistant add-on repository",
-    "image": "ghcr.io/home-assistant/devcontainer:addons",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
     "appPort": [
         "7123:8123",
         "7357:4357"
@@ -17,7 +19,8 @@
     },
     "extensions": [
         "timonwong.shellcheck",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "vscjava.vscode-spring-boot-dashboard"
     ],
     "mounts": [
         "type=volume,target=/var/lib/docker"
