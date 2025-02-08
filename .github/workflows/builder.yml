@@ -2,7 +2,7 @@ name: Builder
 
 on:
   release:
-    types: [created]
+    types: [released]
 
 jobs:
   build:
