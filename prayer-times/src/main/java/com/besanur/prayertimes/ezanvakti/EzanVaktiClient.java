@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class EzanVaktiClient {
 
-  private final String BASE_URL = "https://ezanvakti.herokuapp.com/vakitler/";
+  private final String BASE_URL = "https://ezanvakti.emushaf.net/vakitler/";
   private final RestTemplate restTemplate = new RestTemplate();
 
   public PrayerTimeData fetchPrayerTimes(int regionId) {
     log.info("Trying to fetch the prayer times from {}", BASE_URL);
 
     final ResponseEntity<PrayerTimeRequestEntity[]> response = restTemplate.getForEntity(
-        "https://ezanvakti.herokuapp.com/vakitler/" + regionId, PrayerTimeRequestEntity[].class);
+        BASE_URL + regionId, PrayerTimeRequestEntity[].class);
 
     if (!response.getStatusCode().is2xxSuccessful()) {
       log.warn("Something went wrong, status code {}", response.getStatusCode());
