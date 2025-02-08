@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.2.1] - 2025-02-08
 ### What's Changed
-- **Fixed:** Change api url to ezanvakti.emushaf.net
+- **Fixed:** Changed API URL to `ezanvakti.emushaf.net`
+- **Bumped Dependencies:**
+  - `home-assistant/builder` from 2023.09.0 to 2024.08.2 ([#42](https://github.com/besanur/homeassistant-addons/pull/42), [#45](https://github.com/besanur/homeassistant-addons/pull/45))
+  - `actions/checkout` from 4.1.0 to 4.2.2 ([#39](https://github.com/besanur/homeassistant-addons/pull/39), [#52](https://github.com/besanur/homeassistant-addons/pull/52))
+  - `frenck/action-addon-linter` from 2.13 to 2.18 ([#40](https://github.com/besanur/homeassistant-addons/pull/40), [#51](https://github.com/besanur/homeassistant-addons/pull/51))
+  - `docker/login-action` from 3.0.0 to 3.3.0 ([#46](https://github.com/besanur/homeassistant-addons/pull/46))
+
+**Full Changelog:** [1.2.0...1.2.1](https://github.com/besanur/homeassistant-addons/compare/1.2.0...1.2.1)
 
 ---
 
