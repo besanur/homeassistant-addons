@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2.1] - 2025-02-08
+## [1.3.0] - 2025-02-17
 ### What's Changed
 - **Changes**
   - new Logo
