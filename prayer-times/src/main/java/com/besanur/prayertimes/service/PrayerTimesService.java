@@ -81,9 +81,9 @@ public class PrayerTimesService {
         final PrayerTimeData prayerTimeData = diyanetPrayerTimesParser.fetchMonthlyPrayerTimes(regionId);
         store.put(prayerTimeData.getRegionId(), prayerTimeData);
         return prayerTimeData;
-      } catch (IOException e) {
+      } catch (Exception e) {
         final var errMsg = "Can't parse prayer times from 'diyanet.gov.tr', fallback to ezanvakti";
-        log.error(errMsg, e);
+        log.warn(errMsg, e);
       }
     }
 

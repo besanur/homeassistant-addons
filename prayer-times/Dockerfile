@@ -1,12 +1,12 @@
 ARG BUILD_FROM
 
 # Builder image
-FROM eclipse-temurin:17-jdk as builder
+FROM eclipse-temurin:25-jdk-alpine-3.22 as builder
 
 # Create a custom Java runtime
 RUN export JAVA_TOOL_OPTIONS="-Djdk.lang.Process.launchMechanism=vfork" && \
     $JAVA_HOME/bin/jlink \
-    --add-modules java.base,java.logging,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.sql,jdk.crypto.cryptoki \
+    --add-modules java.net.http,java.base,java.logging,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.sql,jdk.crypto.cryptoki \
     --strip-debug \
     --no-man-pages \
     --no-header-files \
