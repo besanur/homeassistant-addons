@@ -10,7 +10,6 @@ RUN export JAVA_TOOL_OPTIONS="-Djdk.lang.Process.launchMechanism=vfork" && \
     --strip-debug \
     --no-man-pages \
     --no-header-files \
-    --compress=2 \
     --output /javaruntime
 
 WORKDIR /workspace/app
