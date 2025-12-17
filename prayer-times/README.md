@@ -91,7 +91,7 @@ Will return the prayer time for a month
             "isha": "19:23"
         },
         {
-         
+
         },
         {
             "date": "06.12.2022",
@@ -153,10 +153,11 @@ docker run \
   --privileged \
   -v "$(pwd)/prayer-times:/data" \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  homeassistant/amd64-builder \
+  ghcr.io/home-assistant/amd64-builder \
   -t /data \
-  --amd64 \
-  -i {arch}-addon-prayer-times \
+  --aarch64 \
+  --test \
+  -i addon-prayer-times-{arch} \
   -d local
 ```
 
