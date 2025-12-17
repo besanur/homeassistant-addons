@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [1.2.1] - 2025-02-08
 ### What's Changed
+- **Changes**
+  - new Logo
+  - change java version to 25
+  - change base image from debian to alpine 3.23
+
+- **Bumped Dependencies:**
+  - Spring Boot 4.0.0
+  - jsoup 1.21.2
+
+---
+
+## [1.2.1] - 2025-02-08
+### What's Changed
 - **Fixed:** Changed API URL to `ezanvakti.emushaf.net`
 - **Bumped Dependencies:**
   - `home-assistant/builder` from 2023.09.0 to 2024.08.2 ([#42](https://github.com/besanur/homeassistant-addons/pull/42), [#45](https://github.com/besanur/homeassistant-addons/pull/45))
