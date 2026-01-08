@@ -83,7 +83,7 @@ public class PrayerTimesService {
         return prayerTimeData;
       } catch (Exception e) {
         final var errMsg = "Can't parse prayer times from 'diyanet.gov.tr', fallback to ezanvakti";
-        log.warn(errMsg, e);
+        log.warn(errMsg);
       }
     }
 

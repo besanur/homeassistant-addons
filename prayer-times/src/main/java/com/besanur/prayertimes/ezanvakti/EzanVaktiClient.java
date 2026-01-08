@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,9 @@ public class EzanVaktiClient {
       throw new IllegalStateException("No Body.");
     }
 
-    final List<PrayerTime> prayerTimes = Arrays.stream(response.getBody()).map(requestEntity -> PrayerTime.builder()
+    final List<PrayerTime> prayerTimes = Arrays.stream(response.getBody())
+            .filter(prayerTimeRequestEntity -> !prayerTimeRequestEntity.getMiladiTarihKisa().isBefore(LocalDate.now()))
+            .map(requestEntity -> PrayerTime.builder()
         .date(requestEntity.getMiladiTarihKisa())
         .hijriDate(requestEntity.getHicriTarihUzun())
         .fajr(requestEntity.getImsak())
